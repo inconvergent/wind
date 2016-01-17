@@ -18,7 +18,7 @@ SIZE = 1500
 ONE = 1./SIZE
 LINEWIDTH = ONE*1.1
 
-INIT_NUM = 1
+INIT_NUM = 3
 
 FRAC_STP = ONE*3.
 
@@ -29,18 +29,16 @@ WIND_ANGLE_STP = 0.1
 
 def show(render,wind):
 
-  # def draw_sources():
-    # for i,s in enumerate(sources):
-      # if i not in fractures.visited:
-        # render.circle(*s, r=4*ONE, fill=True)
-    # render.ctx.line_to(*sources[c,:])
-      # render.ctx.stroke()
-      # render.ctx.move_to(*sources[start,:])
-
   render.clear_canvas()
+  render.set_line_width(ONE)
+  render.ctx.set_source_rgba(*FRONT)
 
-  # render.ctx.set_source_rgba(*LIGHT)
-  # draw_sources()
+  for xy in wind.xy[:wind.n,:]:
+    render.circle(*xy, r=2*ONE, fill=False)
+
+  # render.ctx.line_to(*sources[c,:])
+  # render.ctx.stroke()
+  # render.ctx.move_to(*sources[start,:])
 
 
 def main():
@@ -55,23 +53,24 @@ def main():
     WIND_ANGLE_STP
   )
 
+  W.seed(INIT_NUM)
+
   def wrap(render):
 
-    # show(render,F)
+    show(render,W)
     # render.write_to_png('{:04d}.png'.format(F.i))
-
     res = W.step()
 
     return res
 
   render = Animate(SIZE, BACK, FRONT, wrap)
 
-  # def __write_svg_and_exit(*args):
-    # gtk.main_quit(*args)
-    # show(render,F)
-    # render.write_to_png('./res/on_exit.png')
+  def __write_and_exit(*args):
+    gtk.main_quit(*args)
+    show(render,W)
+    render.write_to_png('./res/exit.png')
 
-  render.window.connect("destroy", __write_svg_and_exit)
+  render.window.connect("destroy", __write_and_exit)
 
   gtk.main()
 
