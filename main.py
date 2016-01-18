@@ -14,18 +14,17 @@ BLUE = [0,0,1,0.3]
 
 
 NMAX = 10**6
-SIZE = 540
+SIZE = 1000
 ONE = 1./SIZE
 LINEWIDTH = ONE*1.1
 
-INIT_NUM = 3
+INIT_NUM = 5
 
-STP = ONE *7
-
-FRAC_STP = ONE*3.
+STP = ONE*3
 
 
-WIND_ANGLE_STP = 1
+ANGLE_STP = 0.5
+ANGLE_LOCAL_STP = 0.8
 
 
 
@@ -39,7 +38,7 @@ def show(render,wind):
   n = wind.n
 
   for x in xy[:n,:]:
-    render.circle(*x, r=2*ONE, fill=True)
+    render.circle(*x, r=ONE, fill=True)
 
   for i,p in enumerate(wind.p[:n]):
     if p>-1:
@@ -60,16 +59,19 @@ def main():
     NMAX,
     SIZE,
     STP,
-    WIND_ANGLE_STP
+    ANGLE_STP,
+    ANGLE_LOCAL_STP
   )
 
-  # W.rnd_seed(INIT_NUM)
-  W.seed(array([[0.5,0.5]]))
+  W.rnd_seed(INIT_NUM)
+  # W.seed(array([[0.5,0.5]]))
 
   def wrap(render):
 
-    show(render,W)
-    render.write_to_png('{:04d}.png'.format(W.i))
+    if W.i % 5:
+      show(render,W)
+      # render.write_to_png('{:04d}.png'.format(W.i))
+
     res = W.step()
 
     return res

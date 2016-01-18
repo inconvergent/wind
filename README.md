@@ -1,5 +1,7 @@
-Wind [WIP]
+Wind
 =============
+
+![ani](/img/img.png?raw=true "img")
 
 ## Prerequisites
 

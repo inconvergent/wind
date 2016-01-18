@@ -8,6 +8,7 @@ from numpy import zeros
 from numpy import arange
 from numpy import reshape
 from numpy import logical_and
+from numpy import column_stack
 from numpy.random import random
 from numpy.random import randint
 from numpy.linalg import norm
@@ -29,14 +30,17 @@ class Wind(object):
       nmax,
       size,
       stp,
-      wind_angle_stp
+      angle_stp,
+      angle_local_stp
     ):
 
+    self.i = 0
     self.nmax = nmax
     self.size = size
     self.stp = stp
-    self.angle_stp = wind_angle_stp
-    self.i = 0
+    self.angle_stp = angle_stp
+    self.angle_local_stp = angle_local_stp
+
     self.__init_data()
 
   def __init_data(self):
@@ -46,7 +50,7 @@ class Wind(object):
     self.p = zeros((self.nmax,1), 'int')-1
     self.n = 0
 
-  def seed(self,num):
+  def rnd_seed(self,num):
 
     n = self.n
     self.xy[n:n+num,:] = random((num,2))
@@ -65,17 +69,18 @@ class Wind(object):
   def step(self, dbg=False):
 
     self.i += 1
-    angle = self.angle
     n = self.n
     stp = self.stp
-    self.angle = angle + (1-2*random())*self.angle_stp
+
+    self.angle += (1-2*random())*self.angle_stp
+    angle = self.angle + (1-2*random(n))*self.angle_local_stp
 
     xy = self.xy[:n,:]
     p = self.p[:n,:]
 
     tree = kdt(xy)
 
-    new_p = xy + array([[cos(angle),sin(angle)]]) * stp
+    new_p = xy + column_stack([cos(angle),sin(angle)]) * stp
 
     if len(new_p)>0:
       ind = tree.query_ball_point(new_p, stp)
@@ -88,12 +93,12 @@ class Wind(object):
         self.xy[n:n+new_num,:] = new_p[mask,:]
 
         inside = n+(logical_and(self.xy[n:n+new_num,:]<1.0,
-                                self.xy[n:n+new_num,:]>0.0).sum(axis=1)==2).nonzero()[0]
+                                self.xy[n:n+new_num,:]>0.0).sum(axis=1)==2)\
+          .nonzero()[0]
         li = len(inside)
         self.xy[n:n+li,:] = self.xy[inside,:]
         self.p[n:n+li] = self.p[inside]
         self.n = n + li
-
 
     return True
 
