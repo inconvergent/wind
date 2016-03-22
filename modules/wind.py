@@ -48,12 +48,14 @@ class Wind(object):
     self.angle = random()*TWOPI
     self.xy = zeros((self.nmax,2), 'float')
     self.p = zeros((self.nmax,1), 'int')-1
+    self.r = zeros((self.nmax,1), 'int')-1
     self.n = 0
 
   def rnd_seed(self,num):
 
     n = self.n
     self.xy[n:n+num,:] = random((num,2))
+    self.r[n:n+num,0] = range(num)
     self.n = n + num
 
     return self.n
@@ -98,6 +100,7 @@ class Wind(object):
         li = len(inside)
         self.xy[n:n+li,:] = self.xy[inside,:]
         self.p[n:n+li] = self.p[inside]
+        self.r[n:n+li] = self.r[self.p[n:n+li,0]]
         self.n = n + li
 
     return True
