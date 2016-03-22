@@ -55,8 +55,6 @@ def show(render,wind):
 def main():
 
   from render.render import Animate
-  from numpy.random import random
-  from numpy import array
   from modules.wind import Wind
 
   W = Wind(

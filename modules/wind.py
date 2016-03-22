@@ -3,20 +3,15 @@
 from __future__ import print_function
 
 from numpy import pi
-from numpy import array
 from numpy import zeros
 from numpy import arange
 from numpy import reshape
 from numpy import logical_and
 from numpy import column_stack
 from numpy.random import random
-from numpy.random import randint
-from numpy.linalg import norm
 from scipy.spatial import cKDTree as kdt
 from numpy import cos
 from numpy import sin
-from numpy import arctan2
-from collections import defaultdict
 
 
 TWOPI = pi*2
@@ -55,7 +50,7 @@ class Wind(object):
 
     n = self.n
     self.xy[n:n+num,:] = random((num,2))
-    self.r[n:n+num,0] = range(num)
+    self.r[n:n+num,0] = arange(num)
     self.n = n + num
 
     return self.n
