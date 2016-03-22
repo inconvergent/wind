@@ -11,6 +11,8 @@ FRONT = [0,0,0,0.8]
 LIGHT = [0,0,0,0.2]
 CYAN = [0,0.5,0.5,0.2]
 BLUE = [0,0,1,0.3]
+RED = [1,0,0,0.3]
+FRONTCOLORS = [FRONT, LIGHT, CYAN, BLUE, RED]
 
 
 NMAX = 10**6
@@ -32,16 +34,18 @@ def show(render,wind):
 
   render.clear_canvas()
   render.set_line_width(ONE)
-  render.ctx.set_source_rgba(*FRONT)
 
   xy = wind.xy
   n = wind.n
+  r = wind.r
 
-  for x in xy[:n,:]:
+  for i,x in enumerate(xy[:n,:]):
+    render.ctx.set_source_rgba(*(FRONTCOLORS[r[i]]))
     render.circle(*x, r=ONE, fill=True)
 
   for i,p in enumerate(wind.p[:n]):
     if p>-1:
+      render.ctx.set_source_rgba(*(FRONTCOLORS[r[i]]))
       # x = xy[p,:].flatten()
       render.ctx.move_to(*xy[p,:].flatten())
       render.ctx.line_to(*xy[i,:].flatten())
@@ -51,8 +55,6 @@ def show(render,wind):
 def main():
 
   from render.render import Animate
-  from numpy.random import random
-  from numpy import array
   from modules.wind import Wind
 
   W = Wind(
